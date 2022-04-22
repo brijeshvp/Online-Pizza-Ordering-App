@@ -11,10 +11,6 @@ const path = require('path')
 //     res.send('Hello from server')
 // })
 
-// rendering html to  /
-app.get('/',(req,res) => {
-    res.render('home')
-})
 
 // set template engine
 app.use(expressLayout)
@@ -22,6 +18,29 @@ app.use(expressLayout)
 app.set('views',path.join(__dirname,'/resources/views'))
 // specify express which template engine we'll use
 app.set('view engine','ejs')
+
+
+// rendering html
+// when request comes to / render home.ejs
+app.get('/',(req,res) => {
+    res.render('home')
+})
+
+// when request comes to /cart render cart.ejs from customers folder
+app.get('/cart',(req,res) => {
+    res.render('customers/cart.ejs')
+})
+
+// when request comes to /login render login.ejs from auth folder
+app.get('/login',(req,res) => {
+    res.render('auth/login.ejs')
+})
+
+// when request comes to /register render register.ejs from auth folder
+app.get('/register',(req,res) => {
+    res.render('auth/register.ejs')
+})
+
 //  specify assets(where our css and js files are stored to get response in css and js from server for css and js files)
 app.use(express.static('public'))
 
