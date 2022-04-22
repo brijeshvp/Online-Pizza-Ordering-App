@@ -22,7 +22,8 @@ app.use(expressLayout)
 app.set('views',path.join(__dirname,'/resources/views'))
 // specify express which template engine we'll use
 app.set('view engine','ejs')
-
+//  specify assets(where our css and js files are stored to get response in css and js from server for css and js files)
+app.use(express.static('public'))
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT,() =>{
