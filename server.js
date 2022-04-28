@@ -1,3 +1,7 @@
+// to get access of dotenv(.env) file in server.js just include the below line and whatever variables are there in .env file we can access it here
+require('dotenv').config()
+
+
 const express = require('express')
 const app = express()
 // configure template engine(ejs)
@@ -5,12 +9,73 @@ const ejs = require('ejs')
 const expressLayout = require('express-ejs-layouts')
 // to generate path wherver needed
 const path = require('path')
+// import mongoose module(for interection with mongodb)
+const mongoose = require('mongoose')
+
+const MongoDbStore = require('connect-mongo')
+
+// import express-session(for handling sessions)
+const session = require('express-session')  
+// database connection
+// where to connect to(specify in url variable)
+// pizza = db name in our mongodb
+const url = 'mongodb://localhost:27017/pizza';
+// connect to above url
+// connect() method -> 1st arg = url and 2nd arg = mongodb configuration
+mongoose.connect(url,
+{
+    useNewUrlParser: true,
+    // useCreateIndex:true,
+    // useFindAndModify: true,
+    useUnifiedTopology: true,
+});
+// store connection in some variable to use it later
+const connection = mongoose.connection;
+// once() method is kind of event listener and 1st arg = 'open' is an event 
+// 2nd arg = function to be executed when event occures
+// 'open' event means the connection to mongodb is successful
+// if 'open' event occurs print connected else catch the error and print connection failed
+// connection.once('open', () =>{
+//     console.log('Database connected...');
+// }).catch(err =>{
+//     console.log('connection failed...');
+// });
+// connection.on("error", console.error.bind(console, "connection error: "));
+// connection.once("open", function () {
+//   console.log("Connected successfully");
+// });
+connection.once('open', () =>{
+    console.log('Database connected...');
+})
+// connection.on('error',() =>{
+//     console.log('connection failed...');
+// });
 
 // // sending plain text to /
 // app.get('/',(req,res) => {
 //     res.send('Hello from server')
 // })
 
+
+app.use(express.json())
+
+
+// Session config
+app.use(session({
+  secret: process.env.COOKIE_SECRET,
+  resave: false,
+  store: MongoDbStore.create({
+    mongoUrl: url
+  }),
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hour
+}))
+
+// global middleware
+app.use((req,res,next) =>{
+  res.locals.session = req.session
+  next()
+})
 
 // set template engine
 app.use(expressLayout)
@@ -20,30 +85,14 @@ app.set('views',path.join(__dirname,'/resources/views'))
 app.set('view engine','ejs')
 
 
-// rendering html
-// when request comes to / render home.ejs
-app.get('/',(req,res) => {
-    res.render('home')
-})
-
-// when request comes to /cart render cart.ejs from customers folder
-app.get('/cart',(req,res) => {
-    res.render('customers/cart.ejs')
-})
-
-// when request comes to /login render login.ejs from auth folder
-app.get('/login',(req,res) => {
-    res.render('auth/login.ejs')
-})
-
-// when request comes to /register render register.ejs from auth folder
-app.get('/register',(req,res) => {
-    res.render('auth/register.ejs')
-})
+//  importing module(file)  web.js 
+// require will return a function(since only function was exported from web.js)
+// will just call that function by passing app(express object) to define paths there
+require('./routes/web.js')(app)
 
 //  specify assets(where our css and js files are stored to get response in css and js from server for css and js files)
 app.use(express.static('public'))
-
+ 
 const PORT = process.env.PORT || 3000
 app.listen(PORT,() =>{
     console.log(`Listening on port ${PORT}`)

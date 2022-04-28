@@ -11,14 +11,14 @@
     - setup js and scss
 [Done] Install tailwind css
 [Done] Create Home page using Html and Css
-[+] Create Cart page
+[Done] Create Cart page
     - order summary section
     - empty cart section
-[+] - move routes to routes files
-[+] - Create dedicated controllers
-[+] Add to cart functionality
-    [+] Fetch all pizzas from db and show on home page
-    [+] Create menu model and put dummy Data
+[Done] - move routes to routes files
+[Done] - Create dedicated controllers
+[Done] Add to cart functionality
+    [Done] Fetch all pizzas from db and show on home page
+    [Done] Create menu model and put dummy Data
         - connect to mongo db
         - use connect-mongo for session store
             - dependancies
