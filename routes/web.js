@@ -2,7 +2,13 @@
 const homeController = require('../app/http/controllers/homeController')
 const authController = require('../app/http/controllers/authController')
 const cartController = require('../app/http/controllers/customers/cartController')
-const guest = require('../app/http/middlewares/guest')
+const orderController = require('../app/http/controllers/customers/orderController')
+const AdminOrderController = require('../app/http/controllers/admin/orderController')
+
+// middlewares
+const guest = require('../app/http/middlewares/guest')  
+const auth = require('../app/http/middlewares/auth')  
+const admin = require('../app/http/middlewares/admin')  
 // app is a express() object
 // we will recieve from server.js when this module(file) will be imported there
 // and we want same instance of express object created in server.js and objects are always pass by reference in js
@@ -41,6 +47,15 @@ function initRoutes(app){
     // })
     app.get('/cart',cartController().index)
     app.post('/update-cart',cartController().update)
+
+    app.post('/orders',orderController().store)
+
+    // customer routes
+    app.post('/orders',auth, orderController().store)
+    app.get('/customer/orders', auth,orderController().index)
+
+    // admin routes
+    app.get('/admin/orders',admin,AdminOrderController().index)
 
 }
 
