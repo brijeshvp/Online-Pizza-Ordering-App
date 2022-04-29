@@ -15,7 +15,10 @@ const mongoose = require('mongoose')
 const MongoDbStore = require('connect-mongo')
 
 // import express-session(for handling sessions)
-const session = require('express-session')  
+const session = require('express-session')
+const flash = require('express-flash')  
+
+const passport = require('passport')
 // database connection
 // where to connect to(specify in url variable)
 // pizza = db name in our mongodb
@@ -56,7 +59,8 @@ connection.once('open', () =>{
 //     res.send('Hello from server')
 // })
 
-
+app.use(flash())
+app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
 
@@ -71,9 +75,17 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hour
 }))
 
+
+// passport config
+const passportInit = require('./app/config/passport')
+passportInit(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
 // global middleware
 app.use((req,res,next) =>{
   res.locals.session = req.session
+  res.locals.user = req.user
   next()
 })
 

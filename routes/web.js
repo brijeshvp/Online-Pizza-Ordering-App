@@ -2,6 +2,7 @@
 const homeController = require('../app/http/controllers/homeController')
 const authController = require('../app/http/controllers/authController')
 const cartController = require('../app/http/controllers/customers/cartController')
+const guest = require('../app/http/middlewares/guest')
 // app is a express() object
 // we will recieve from server.js when this module(file) will be imported there
 // and we want same instance of express object created in server.js and objects are always pass by reference in js
@@ -24,15 +25,15 @@ function initRoutes(app){
     // app.get('/login',(req,res) => {
     //     res.render('auth/login.ejs')
     // })
-    app.get('/login',authController().login)
-
+    app.get('/login',guest,authController().login)
+    app.post('/login',authController().postLogin)
     // when request comes to /register render register.ejs from auth folder
     // app.get('/register',(req,res) => {
     //     res.render('auth/register.ejs')
     // })
-    app.get('/register',authController().register)
-
-
+    app.get('/register',guest,authController().register)
+    app.post('/register',authController().postRegister)
+    app.post('/logout',authController().logout)
     
     // when request comes to /cart render cart.ejs from customers folder
     // app.get('/cart',(req,res) => {
