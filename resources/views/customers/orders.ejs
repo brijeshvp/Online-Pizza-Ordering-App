@@ -2,6 +2,7 @@
     <div class="container mx-auto pt-12">
         <h1 class="font-bold text-lg mb-4">All Orders</h1>
         <% if(messages.success) { %>
+            <!-- role = alert in below div becoz we are giving alert msg(order place successfully(search more about it)) -->
         <div id="success-alert" class="flex items-center bg-green-500 text-white text-sm font-bold px-4 py-3" role="alert">
             <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path
@@ -11,6 +12,7 @@
             <p><%= messages.success %></p>
         </div>
         <% } %>
+        <!-- w-full means width = full(100%) -->
         <table class="w-full table-auto bg-white">
             <thead>
                 <tr>
