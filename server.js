@@ -23,6 +23,8 @@ const passport = require('passport')
 // where to connect to(specify in url variable)
 // pizza = db name in our mongodb
 const url = 'mongodb://localhost:27017/pizza';
+const Emitter = require('events')
+
 // connect to above url
 // connect() method -> 1st arg = url and 2nd arg = mongodb configuration
 mongoose.connect(url,
@@ -63,6 +65,9 @@ app.use(flash())
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
+// Event emitter
+const eventEmitter = new Emitter()
+app.set('eventEmitter',eventEmitter)
 
 // Session config
 app.use(session({
@@ -106,6 +111,27 @@ require('./routes/web.js')(app)
 app.use(express.static('public'))
  
 const PORT = process.env.PORT || 3000
-app.listen(PORT,() =>{
+const server = app.listen(PORT,() =>{
     console.log(`Listening on port ${PORT}`)
 }) 
+
+
+// socket
+const io= require('socket.io')(server)
+io.on('connection',(socket) =>{
+  // join
+
+  // console.log(socket.id)
+  socket.on('join',(orderId) =>{
+  // console.log(orderId)
+    socket.join(orderId)
+  })
+})
+
+eventEmitter.on('orderUpdated',(data) =>{
+  io.to( `order_${data.id}`).emit('orderUpdated',data)
+})
+
+eventEmitter.on('orderPlaced',(data) =>{
+  io.to('adminRoom').emit('orderPlaced',data)
+})
