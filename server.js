@@ -22,7 +22,7 @@ const passport = require('passport')
 // database connection
 // where to connect to(specify in url variable)
 // pizza = db name in our mongodb
-const url = 'mongodb://localhost:27017/pizza';
+const url = process.env.MONGO_CONNECTION_URL;
 const Emitter = require('events')
 
 // connect to above url
@@ -106,7 +106,6 @@ app.set('view engine','ejs')
 // require will return a function(since only function was exported from web.js)
 // will just call that function by passing app(express object) to define paths there
 require('./routes/web.js')(app)
-
 //  specify assets(where our css and js files are stored to get response in css and js from server for css and js files)
 app.use(express.static('public'))
  
@@ -134,4 +133,10 @@ eventEmitter.on('orderUpdated',(data) =>{
 
 eventEmitter.on('orderPlaced',(data) =>{
   io.to('adminRoom').emit('orderPlaced',data)
+})
+
+// 404 page
+app.use((req,res) =>{
+  // res.status(404).send('<h1> 404, Page not found</h1>')
+  res.status(404).render('errors/404')
 })

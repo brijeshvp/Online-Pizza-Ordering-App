@@ -84,15 +84,15 @@ updateStatus(order);
 
 // socket
 let socket = io()
-initAdmin(socket)
 // join 
 if(order){
     socket.emit('join',`order_${order._id}`)
 }
 
 let adminAreaPath = window.location.pathname;
-console.log(adminAreaPath)
+// console.log(adminAreaPath)
 if(adminAreaPath.includes('admin')){
+    initAdmin(socket)
     socket.emit('join','adminRoom')
 }
 // order_(id)   -> name of a private room(unique room for each order will be created)
