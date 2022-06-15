@@ -7,3 +7,6 @@ let mix = require('laravel-mix');
 // compile 'resources/scss/app.scss' file and save it to 'public/css/app.css'
 // using js() and sass() functions repectively
 mix.js('resources/js/app.js', 'public/js/app.js').sass('resources/scss/app.scss','public/css/app.css');
+mix.babelConfig({
+    "plugins": ["@babel/plugin-proposal-class-properties"]
+});
